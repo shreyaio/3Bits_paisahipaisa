@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,15 +6,40 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import Layout from "@/components/layout/Layout";
-import { CircleCheck, Lock, Mail, Shield, User } from "lucide-react";
+import {
+  CircleCheck,
+  Lock,
+  Mail,
+  Shield,
+  User,
+  KeyRound,
+} from "lucide-react";
 
-// Define schemas for validation
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
@@ -36,8 +60,10 @@ const SignupLogin = () => {
   const { toast } = useToast();
   const { login, signup } = useAuth();
   const [activeTab, setActiveTab] = useState("login");
+  const [show2FA, setShow2FA] = useState(false);
+  const [code, setCode] = useState("");
 
-  const loginForm = useForm<z.infer<typeof loginFormSchema>>({
+  const loginForm = useForm({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
@@ -45,7 +71,7 @@ const SignupLogin = () => {
     },
   });
 
-  const signupForm = useForm<z.infer<typeof signupFormSchema>>({
+  const signupForm = useForm({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
       name: "",
@@ -55,16 +81,12 @@ const SignupLogin = () => {
     },
   });
 
-  const onLoginSubmit = (values: z.infer<typeof loginFormSchema>) => {
+  const onLoginSubmit = (values) => {
     login(values.email, values.password);
-    toast({
-      title: "Login successful",
-      description: "Welcome back to TrustShare!",
-    });
-    navigate("/dashboard");
+    setShow2FA(true);
   };
 
-  const onSignupSubmit = (values: z.infer<typeof signupFormSchema>) => {
+  const onSignupSubmit = (values) => {
     signup(values.name, values.email, values.password);
     toast({
       title: "Account created",
@@ -73,279 +95,180 @@ const SignupLogin = () => {
     navigate("/dashboard");
   };
 
+  const handle2FAVerify = () => {
+    if (code === "123456") {
+      toast({ title: "Login successful", description: "Welcome back to TrustShare!" });
+      navigate("/dashboard");
+    } else {
+      toast({ title: "Invalid code", description: "Please enter the correct verification code.", variant: "destructive" });
+    }
+  };
+
   return (
     <Layout>
       <div className="container mx-auto py-12">
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Left side - Auth forms */}
           <div className="lg:w-1/2">
-            <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Welcome Back</CardTitle>
-                    <CardDescription>
-                      Login to your TrustShare account to start renting and sharing.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Form {...loginForm}>
-                      <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
-                        <FormField
-                          control={loginForm.control}
-                          name="email"
-                          render={({ field }) => (
+            {show2FA ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-richblack">Two-Step Verification</CardTitle>
+                  <CardDescription>Enter the code sent to your email.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Enter 6-digit code"
+                      className="pl-10"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                    />
+                  </div>
+                  <Button className="w-full bg-brand-blue hover:bg-brand-teal text-richblack">
+                    Verify Code
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-pale-lime border border-softgray">
+                  <TabsTrigger value="login">Login</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+
+                {/* LOGIN */}
+                <TabsContent value="login">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-richblack">Welcome Back</CardTitle>
+                      <CardDescription>Login to start renting and sharing.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Form {...loginForm}>
+                        <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+                          <FormField control={loginForm.control} name="email" render={({ field }) => (
                             <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
                                 <div className="relative">
                                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    placeholder="your@email.com"
-                                    className="pl-10"
-                                    {...field}
-                                  />
+                                  <Input placeholder="your@email.com" className="pl-10" {...field} />
                                 </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={loginForm.control}
-                          name="password"
-                          render={({ field }) => (
+                          )} />
+                          <FormField control={loginForm.control} name="password" render={({ field }) => (
                             <FormItem>
                               <FormLabel>Password</FormLabel>
                               <FormControl>
                                 <div className="relative">
                                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    className="pl-10"
-                                    {...field}
-                                  />
+                                  <Input type="password" placeholder="••••••••" className="pl-10" {...field} />
                                 </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
-                          )}
-                        />
-                        <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal">
-                          Login
-                        </Button>
-                      </form>
-                    </Form>
-                  </CardContent>
-                  <CardFooter className="flex flex-col items-center text-center">
-                    <div className="text-sm text-muted-foreground">
-                      Don't have an account?{" "}
-                      <button 
-                        onClick={() => setActiveTab("signup")}
-                        className="text-brand-blue hover:underline"
-                      >
-                        Sign up now
-                      </button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="signup">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Create an Account</CardTitle>
-                    <CardDescription>
-                      Join our trusted community of renters and lenders.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Form {...signupForm}>
-                      <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
-                        <FormField
-                          control={signupForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    placeholder="Your full name"
-                                    className="pl-10"
-                                    {...field}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={signupForm.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    placeholder="your@email.com"
-                                    className="pl-10"
-                                    {...field}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={signupForm.control}
-                          name="password"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Password</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    className="pl-10"
-                                    {...field}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={signupForm.control}
-                          name="confirmPassword"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Confirm Password</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    className="pl-10"
-                                    {...field}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal">
-                          Create Account
-                        </Button>
-                      </form>
-                    </Form>
-                  </CardContent>
-                  <CardFooter className="flex flex-col items-center text-center">
-                    <div className="text-sm text-muted-foreground">
-                      Already have an account?{" "}
-                      <button 
-                        onClick={() => setActiveTab("login")}
-                        className="text-brand-blue hover:underline"
-                      >
-                        Login
-                      </button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-            </Tabs>
+                          )} />
+                          <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal text-richblack">Login</Button>
+                        </form>
+                      </Form>
+                    </CardContent>
+                    <CardFooter className="flex flex-col items-center text-center">
+                      <div className="text-sm text-muted-foreground">
+                        Don&apos;t have an account? <button onClick={() => setActiveTab("signup")} className="text-brand-blue hover:underline">Sign up now</button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+
+                {/* SIGNUP */}
+                <TabsContent value="signup">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-richblack">Create an Account</CardTitle>
+                      <CardDescription>Join our trusted community.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Form {...signupForm}>
+                        <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
+                          {['name', 'email', 'password', 'confirmPassword'].map((fieldName) => (
+                            <FormField key={fieldName} control={signupForm.control} name={fieldName} render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="capitalize">{fieldName.replace(/([A-Z])/g, ' $1')}</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    {fieldName === 'name' && <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />}
+                                    {fieldName === 'email' && <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />}
+                                    {fieldName.includes('password') && <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />}
+                                    <Input
+                                      type={fieldName.includes('password') ? 'password' : 'text'}
+                                      placeholder={fieldName.includes('password') ? '••••••••' : ''}
+                                      className="pl-10"
+                                      {...field}
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )} />
+                          ))}
+                          <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal text-richblack">Create Account</Button>
+                        </form>
+                      </Form>
+                    </CardContent>
+                    <CardFooter className="flex flex-col items-center text-center">
+                      <div className="text-sm text-muted-foreground">
+                        Already have an account? <button onClick={() => setActiveTab("login")} className="text-brand-blue hover:underline">Login</button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
-          
-          {/* Right side - Trust tiers & benefits */}
+
+          {/* RIGHT SIDE INFO */}
           <div className="lg:w-1/2">
-            <div className="bg-gray-50 p-8 rounded-lg">
-              <h2 className="text-2xl font-bold mb-6">Our Trust-Centered System</h2>
+            <div className="bg-pale-lime p-8 rounded-lg shadow border border-softgray">
+              <h2 className="text-2xl font-bold mb-6 text-richblack">Our Trust-Centered System</h2>
               <p className="text-gray-600 mb-8">
                 TrustShare uses a multi-tiered verification system to ensure a safe and reliable experience for everyone in our community.
               </p>
-              
-              <div className="space-y-8">
-                <div className="flex gap-4">
-                  <div className="bg-amber-100 p-3 rounded-full h-12 w-12 flex items-center justify-center flex-shrink-0">
-                    <Mail className="h-6 w-6 text-amber-600" />
+              {[{
+                icon: Mail, bg: 'bg-amber-100', title: 'Basic Account (Tier 1)', color: 'text-amber-600',
+                desc: 'Email verification required. Browse listings and create basic profile.',
+                points: ['Email verification', 'Browse listings', 'Create profile']
+              }, {
+                icon: Shield, bg: 'bg-green-100', title: 'Verified Account (Tier 2)', color: 'text-green-600',
+                desc: 'ID verification required. Unlock full platform features and build trust.',
+                points: ['Government ID verification', 'Verified badge on profile', 'Higher trust ratings', 'Preferred lending partner']
+              }].map((tier, idx) => (
+                <div className="flex gap-4 mb-6" key={idx}>
+                  <div className={`${tier.bg} p-3 rounded-full h-12 w-12 flex items-center justify-center`}>
+                    <tier.icon className={`h-6 w-6 ${tier.color}`} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Basic Account (Tier 1)</h3>
-                    <p className="text-gray-600">
-                      Email verification required. Browse listings and create basic profile.
-                    </p>
-                    <ul className="mt-2 space-y-1">
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Email verification
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Browse listings
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Create profile
-                      </li>
+                    <h3 className="text-lg font-semibold mb-1 text-richblack">{tier.title}</h3>
+                    <p className="text-gray-600 mb-2">{tier.desc}</p>
+                    <ul className="space-y-1">
+                      {tier.points.map((point, i) => (
+                        <li key={i} className="flex items-center text-sm text-gray-600">
+                          <CircleCheck className="h-4 w-4 mr-2 text-green-500" />{point}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
-                
-                <div className="flex gap-4">
-                  <div className="bg-green-100 p-3 rounded-full h-12 w-12 flex items-center justify-center flex-shrink-0">
-                    <Shield className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Verified Account (Tier 2)</h3>
-                    <p className="text-gray-600">
-                      ID verification required. Unlock full platform features and build trust.
-                    </p>
-                    <ul className="mt-2 space-y-1">
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Government ID verification
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Verified badge on profile
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Higher trust ratings
-                      </li>
-                      <li className="flex items-center text-sm text-gray-600">
-                        <CircleCheck className="h-4 w-4 mr-2 text-green-500" />
-                        Preferred lending partner
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              
+              ))}
               <div className="mt-8 p-4 bg-brand-blue/10 rounded-lg border border-brand-blue/20">
-                <h4 className="font-semibold mb-2 flex items-center">
-                  <Shield className="h-5 w-5 mr-2 text-brand-blue" />
-                  Why Verification Matters
+                <h4 className="font-semibold mb-2 flex items-center text-richblack">
+                  <Shield className="h-5 w-5 mr-2 text-brand-blue" /> Why Verification Matters
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Our verification process helps ensure that all community members are who they say they are. 
-                  Verified users can enjoy more platform privileges and build stronger trust relationships.
+                  Our verification process helps ensure that all community members are who they say they are. Verified users enjoy more platform privileges.
                 </p>
               </div>
             </div>

@@ -20,7 +20,6 @@ const ItemDetails = () => {
   const { user } = useAuth();
   const { bookings, addBooking } = useBookings();
   const { toast } = useToast();
-  
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [isWishlisted, setIsWishlisted] = useState(false);
