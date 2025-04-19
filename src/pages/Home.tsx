@@ -94,14 +94,14 @@ const Home = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4 transition-all duration-700 delay-400">
               <Link to="/browse">
-                <Button size="lg" variant="secondary" className="font-medium relative group overflow-hidden">
+                <Button className="font-medium px-12 py-6 text-lg md:text-xl relative group overflow-hidden" variant="secondary" className="font-medium relative group overflow-hidden">
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
-                  <Search className="mr-2 h-5 w-5" />
+                  <Search className="mr-2 h-10 w-10" />
                   Browse Items
                 </Button>
               </Link>
               <Link to={user?.isLoggedIn ? "/list-item" : "/auth"}>
-                <Button size="lg" className="font-medium bg-white text-[#A3D80D] hover:bg-gray-100 relative group overflow-hidden">
+                <Button className="font-medium px-12 py-6 text-lg md:text-xl relative group overflow-hidden" className="font-medium bg-white text-[#A3D80D] hover:bg-gray-100 relative group overflow-hidden">
                   <span className="absolute inset-0 bg-[#A3D80D] opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                   List Your Item
                   <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
@@ -204,44 +204,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* How It Works - Bento Grid */}
-      <section className="py-16 bg-[#F1F9DB]">
-        <div className="container mx-auto px-4">
-          <div 
-            id="howItWorks"
-            ref={(el) => registerSection("howItWorks", el)}
-            className={`transition-all duration-1000 transform ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-          >
-            <h2 className="text-3xl font-bold text-center mb-12 text-[#171816]">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[Search, Shield, TrendingUp].map((Icon, i) => (
-                <div
-                  key={i}
-                  className={`text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-500 delay-${i * 200} relative group ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#A3D80D]/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-500"></div>
-                  <div className="bg-[#A3D80D]/10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A3D80D]/20 transition-colors duration-300">
-                    <Icon className="h-10 w-10 text-[#A3D80D] transform group-hover:scale-110 transition-transform duration-300" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-[#171816]">
-                    {i === 0 ? "Find What You Need" : i === 1 ? "Book With Confidence" : "Share & Earn"}
-                  </h3>
-                  <p className="text-gray-600">
-                    {i === 0
-                      ? "Browse thousands of items available in your area. Filter by category, condition, and price."
-                      : i === 1
-                      ? "Our verified user system ensures you're renting from trusted community members."
-                      : "List your unused items and earn money while helping others in your community."}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Trust & Safety - Bento Grid */}
       <section className="py-16 bg-white">
@@ -290,10 +252,11 @@ const Home = () => {
               <div className="rounded-2xl overflow-hidden shadow-lg relative group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-[#A3D80D]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
                 <img
-                  src="/api/placeholder/600/400"
+                  src="/7bde7239-0c3f-461b-9da2-e245f191ee70_750x422.jpg"
                   alt="People shaking hands"
                   className="rounded-lg shadow-md w-full transform group-hover:scale-105 transition-transform duration-700"
                 />
+
               </div>
             </div>
           </div>

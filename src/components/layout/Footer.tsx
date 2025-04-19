@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container grid gap-8 grid-cols-1 md:grid-cols-4">
         <div className="space-y-4">
           <Link to="/" className="flex items-center gap-2">
-            <div className="bg-brand-blue text-white p-1 rounded">
+            <div className="bg-lime-600 text-white p-1 rounded">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -33,27 +33,27 @@ const Footer = () => {
         <div>
           <h3 className="font-medium text-lg mb-4">Platform</h3>
           <ul className="space-y-2">
-            <li><Link to="/browse" className="text-gray-600 hover:text-brand-blue text-sm">Browse Items</Link></li>
-            <li><Link to="/list-item" className="text-gray-600 hover:text-brand-blue text-sm">List Your Item</Link></li>
-            <li><Link to="/policies" className="text-gray-600 hover:text-brand-blue text-sm">Trust & Safety</Link></li>
+            <li><Link to="/browse" className="text-gray-600 hover:text-[#396c35] text-sm">Browse Items</Link></li>
+            <li><Link to="/list-item" className="text-gray-600 hover:text-[#396c35] text-sm">List Your Item</Link></li>
+            <li><Link to="/policies" className="text-gray-600 hover:text-[#396c35] text-sm">Trust & Safety</Link></li>
           </ul>
         </div>
         
         <div>
           <h3 className="font-medium text-lg mb-4">Company</h3>
           <ul className="space-y-2">
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">About Us</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">How It Works</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">Contact</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">About Us</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">How It Works</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">Contact</a></li>
           </ul>
         </div>
         
         <div>
           <h3 className="font-medium text-lg mb-4">Legal</h3>
           <ul className="space-y-2">
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">Terms of Service</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">Privacy Policy</a></li>
-            <li><a href="#" className="text-gray-600 hover:text-brand-blue text-sm">Cookie Policy</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">Terms of Service</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">Privacy Policy</a></li>
+            <li><a href="#" className="text-gray-600 hover:text-[#396c35] text-sm">Cookie Policy</a></li>
           </ul>
         </div>
       </div>

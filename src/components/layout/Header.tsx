@@ -75,10 +75,10 @@ const Header = () => {
             <>
               {/* Notification and Messages Icons */}
               <div className="hidden md:flex items-center gap-2">
-                <Link to="/alerts" className="text-[#A3D80D] hover:text-white transition-colors">
+                <Link to="/alerts" className="text-[#396c35] hover:text-white transition-colors">
                   <Bell size={20} />
                 </Link>
-                <Link to="/chat" className="text-[#A3D80D] hover:text-white transition-colors">
+                <Link to="/chat" className="text-[#396c35] hover:text-white transition-colors">
                   <MessageCircle size={20} />
                 </Link>
               </div>
@@ -89,7 +89,7 @@ const Header = () => {
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="bg-brand-purple text-white">
+                      <AvatarFallback className="bg-lime-600 text-white p-1 rounded">
                         {user.name.substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
