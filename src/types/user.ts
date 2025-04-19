@@ -1,5 +1,5 @@
 
-export type VerificationStatus = "basic" | "pending" | "verified";
+export type VerificationStatus = "basic" | "pending" | "verified" | "none";
 
 export interface User {
   id: string;

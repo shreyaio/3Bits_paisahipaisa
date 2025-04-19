@@ -1,17 +1,5 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
-
-type VerificationStatus = "basic" | "verified" | "none";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  verificationStatus: VerificationStatus;
-  avatar?: string;
-  completionPercentage: number;
-  isLoggedIn: boolean;
-}
+import { User, VerificationStatus } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
@@ -93,11 +81,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // In a real app, this would send the file to a secure server
     // For now, we'll simulate the verification process
     if (user) {
-      // Update user status to "pending" or directly to "verified" for demo
+      // Update user status to "verified" for demo
       setTimeout(() => {
         const updatedUser = { 
           ...user, 
-          verificationStatus: "verified",
+          verificationStatus: "verified" as VerificationStatus,
           completionPercentage: Math.min(user.completionPercentage + 20, 100)
         };
         setUser(updatedUser);

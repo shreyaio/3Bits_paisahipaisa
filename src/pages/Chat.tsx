@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/contexts/ChatContext";
 import Layout from "@/components/layout/Layout";
@@ -7,45 +6,73 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import VerificationBadge from "@/components/shared/VerificationBadge";
 import { Search, Send, Image, Paperclip, Phone, Video } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Chat = () => {
   const { user } = useAuth();
-  const { conversations, messages, sendMessage } = useChat();
+  const { 
+    conversations, 
+    messages: allMessages, 
+    sendMessage, 
+    getConversationMessages,
+    getUserConversations,
+    getParticipantInfo
+  } = useChat();
+  
   const [selectedConversation, setSelectedConversation] = useState(
     conversations.length > 0 ? conversations[0].id : null
   );
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   
+  // Get user conversations or show example conversations if no user
+  const userConversations = user 
+    ? getUserConversations(user.id)
+    : conversations;
+  
   // Filter conversations based on search query
-  const filteredConversations = conversations.filter(convo => 
-    convo.participantName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredConversations = userConversations.filter(convo => {
+    const participantInfo = getParticipantInfo(convo, user?.id || "");
+    return participantInfo.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
   
   // Get messages for the selected conversation
-  const conversationMessages = messages.filter(
-    msg => msg.conversationId === selectedConversation
-  );
+  const conversationMessages = selectedConversation 
+    ? getConversationMessages(selectedConversation)
+    : [];
   
   // Get the selected conversation details
-  const activeConversation = conversations.find(
+  const activeConversation = userConversations.find(
     convo => convo.id === selectedConversation
   );
+  
+  // Get participant info for the selected conversation
+  const participantInfo = activeConversation 
+    ? getParticipantInfo(activeConversation, user?.id || "")
+    : { name: "", avatar: undefined, isVerified: false };
   
   // Handle sending a new message
   const handleSendMessage = () => {
     if (!messageText.trim() || !selectedConversation || !user) return;
     
-    sendMessage({
-      id: Math.random().toString(36).substring(2, 9),
-      conversationId: selectedConversation,
-      senderId: user.id,
-      text: messageText,
-      timestamp: new Date().toISOString(),
-    });
+    const otherParticipantId = activeConversation?.participants.find(id => id !== user.id) || "";
+    
+    sendMessage(
+      selectedConversation,
+      user.id,
+      otherParticipantId,
+      messageText
+    );
     
     setMessageText("");
   };
+
+  useEffect(() => {
+    // Set the first conversation as selected if none is selected
+    if (filteredConversations.length > 0 && !selectedConversation) {
+      setSelectedConversation(filteredConversations[0].id);
+    }
+  }, [filteredConversations, selectedConversation]);
 
   return (
     <Layout>
@@ -55,7 +82,12 @@ const Chat = () => {
             {/* Conversations list */}
             <div className="border-r">
               <div className="p-4 border-b">
-                <h2 className="font-semibold mb-4">Messages</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-semibold">Messages</h2>
+                  <Link to="/messages">
+                    <Button variant="outline" size="sm">Try New UI</Button>
+                  </Link>
+                </div>
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -69,46 +101,50 @@ const Chat = () => {
               
               <div className="overflow-y-auto h-[calc(100%-80px)]">
                 {filteredConversations.length > 0 ? (
-                  filteredConversations.map((convo) => (
-                    <div
-                      key={convo.id}
-                      className={`p-4 border-b flex items-center gap-3 cursor-pointer hover:bg-gray-50 ${
-                        selectedConversation === convo.id ? "bg-gray-100" : ""
-                      }`}
-                      onClick={() => setSelectedConversation(convo.id)}
-                    >
-                      <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {convo.participantAvatar ? (
-                          <img
-                            src={convo.participantAvatar}
-                            alt={convo.participantName}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-lg text-gray-500">
-                            {convo.participantName.charAt(0)}
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex-grow min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div className="font-medium truncate flex items-center">
-                            {convo.participantName}
-                            {convo.isVerified && (
-                              <VerificationBadge verified={true} className="ml-1" />
-                            )}
+                  filteredConversations.map((convo) => {
+                    const participant = getParticipantInfo(convo, user?.id || "");
+                    
+                    return (
+                      <div
+                        key={convo.id}
+                        className={`p-4 border-b flex items-center gap-3 cursor-pointer hover:bg-gray-50 ${
+                          selectedConversation === convo.id ? "bg-gray-100" : ""
+                        }`}
+                        onClick={() => setSelectedConversation(convo.id)}
+                      >
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                          {participant.avatar ? (
+                            <img
+                              src={participant.avatar}
+                              alt={participant.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-lg text-gray-500">
+                              {participant.name.charAt(0)}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex-grow min-w-0">
+                          <div className="flex items-center justify-between">
+                            <div className="font-medium truncate flex items-center">
+                              {participant.name}
+                              {participant.isVerified && (
+                                <VerificationBadge status="verified" className="ml-1" />
+                              )}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {convo.lastMessageTime && new Date(convo.lastMessageTime).toLocaleDateString()}
+                            </div>
                           </div>
-                          <div className="text-xs text-gray-500">
-                            {new Date(convo.lastMessageTime).toLocaleDateString()}
+                          <div className="text-sm text-gray-500 truncate">
+                            {convo.lastMessageText}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500 truncate">
-                          {convo.lastMessage}
-                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="p-8 text-center text-gray-500">
                     No conversations found
@@ -125,24 +161,24 @@ const Chat = () => {
                   <div className="p-4 border-b flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        {activeConversation?.participantAvatar ? (
+                        {participantInfo.avatar ? (
                           <img
-                            src={activeConversation.participantAvatar}
-                            alt={activeConversation.participantName}
+                            src={participantInfo.avatar}
+                            alt={participantInfo.name}
                             className="h-full w-full object-cover"
                           />
                         ) : (
                           <span className="text-lg text-gray-500">
-                            {activeConversation?.participantName.charAt(0)}
+                            {participantInfo.name.charAt(0)}
                           </span>
                         )}
                       </div>
                       
                       <div>
                         <div className="font-medium flex items-center">
-                          {activeConversation?.participantName}
-                          {activeConversation?.isVerified && (
-                            <VerificationBadge verified={true} className="ml-1" />
+                          {participantInfo.name}
+                          {participantInfo.isVerified && (
+                            <VerificationBadge status="verified" className="ml-1" />
                           )}
                         </div>
                         <div className="text-xs text-green-500">Online</div>

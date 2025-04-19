@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { 
   Tooltip,
@@ -7,9 +6,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CircleCheck, AlertCircle } from "lucide-react";
+import { VerificationStatus } from "@/types/user";
 
 interface VerificationBadgeProps {
-  status: "verified" | "basic" | "none";
+  status: VerificationStatus;
   showLabel?: boolean;
   className?: string;
 }
