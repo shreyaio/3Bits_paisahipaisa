@@ -1,0 +1,12 @@
+
+export type VerificationStatus = "basic" | "pending" | "verified";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  isLoggedIn: boolean;
+  verificationStatus: VerificationStatus;
+  completionPercentage: number;
+}
