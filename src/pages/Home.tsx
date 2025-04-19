@@ -129,44 +129,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How It Works - Bento Grid */}
-      <section className="py-16 bg-[#F1F9DB]">
-        <div className="container mx-auto px-4">
-          <div 
-            id="howItWorks"
-            ref={(el) => registerSection("howItWorks", el)}
-            className={`transition-all duration-1000 transform ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-          >
-            <h2 className="text-3xl font-bold text-center mb-12 text-[#171816]">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[Search, Shield, TrendingUp].map((Icon, i) => (
-                <div
-                  key={i}
-                  className={`text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-500 delay-${i * 200} relative group ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#A3D80D]/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-500"></div>
-                  <div className="bg-[#A3D80D]/10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A3D80D]/20 transition-colors duration-300">
-                    <Icon className="h-10 w-10 text-[#A3D80D] transform group-hover:scale-110 transition-transform duration-300" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-[#171816]">
-                    {i === 0 ? "Find What You Need" : i === 1 ? "Book With Confidence" : "Share & Earn"}
-                  </h3>
-                  <p className="text-gray-600">
-                    {i === 0
-                      ? "Browse thousands of items available in your area. Filter by category, condition, and price."
-                      : i === 1
-                      ? "Our verified user system ensures you're renting from trusted community members."
-                      : "List your unused items and earn money while helping others in your community."}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Categories - Bento Grid */}
       <section className="py-16 bg-white">
@@ -236,6 +198,44 @@ const Home = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#A3D80D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                     <ItemCard listing={listing} />
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* How It Works - Bento Grid */}
+      <section className="py-16 bg-[#F1F9DB]">
+        <div className="container mx-auto px-4">
+          <div 
+            id="howItWorks"
+            ref={(el) => registerSection("howItWorks", el)}
+            className={`transition-all duration-1000 transform ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+          >
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#171816]">
+              How It Works
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[Search, Shield, TrendingUp].map((Icon, i) => (
+                <div
+                  key={i}
+                  className={`text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-500 delay-${i * 200} relative group ${isVisible.howItWorks ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+                  style={{ transitionDelay: `${i * 100}ms` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#A3D80D]/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-500"></div>
+                  <div className="bg-[#A3D80D]/10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A3D80D]/20 transition-colors duration-300">
+                    <Icon className="h-10 w-10 text-[#A3D80D] transform group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-[#171816]">
+                    {i === 0 ? "Find What You Need" : i === 1 ? "Book With Confidence" : "Share & Earn"}
+                  </h3>
+                  <p className="text-gray-600">
+                    {i === 0
+                      ? "Browse thousands of items available in your area. Filter by category, condition, and price."
+                      : i === 1
+                      ? "Our verified user system ensures you're renting from trusted community members."
+                      : "List your unused items and earn money while helping others in your community."}
+                  </p>
                 </div>
               ))}
             </div>

@@ -34,12 +34,12 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <div className="bg-brand-blue text-white p-1 rounded">
+            <div className="bg-lime-600 text-white p-1 rounded">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -56,15 +56,15 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:text-brand-blue transition-colors flex items-center gap-1">
+          <Link to="/" className="text-sm font-medium text-[#396c35] hover:text-white transition-colors flex items-center gap-1">
             <Home size={18} />
             Home
           </Link>
-          <Link to="/browse" className="text-sm font-medium hover:text-brand-blue transition-colors flex items-center gap-1">
+          <Link to="/browse" className="text-sm font-medium text-[#396c35] hover:text-white transition-colors flex items-center gap-1">
             <Search size={18} />
             Browse
           </Link>
-          <Link to="/list-item" className="text-sm font-medium hover:text-brand-blue transition-colors flex items-center gap-1">
+          <Link to="/list-item" className="text-sm font-medium text-[#396c35] hover:text-white transition-colors flex items-center gap-1">
             <PlusCircle size={18} />
             List Item
           </Link>
@@ -75,10 +75,10 @@ const Header = () => {
             <>
               {/* Notification and Messages Icons */}
               <div className="hidden md:flex items-center gap-2">
-                <Link to="/alerts" className="text-gray-600 hover:text-brand-blue transition-colors">
+                <Link to="/alerts" className="text-[#A3D80D] hover:text-white transition-colors">
                   <Bell size={20} />
                 </Link>
-                <Link to="/chat" className="text-gray-600 hover:text-brand-blue transition-colors">
+                <Link to="/chat" className="text-[#A3D80D] hover:text-white transition-colors">
                   <MessageCircle size={20} />
                 </Link>
               </div>
