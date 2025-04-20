@@ -346,6 +346,11 @@ const ItemDetails = () => {
                   <div className="text-sm">Service fee</div>
                   <div>$0</div>
                 </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="text-sm">Deposit Fee</div>
+                  <div>${listing.depositFee}</div>
+                </div>
                 
                 <div className="pt-4 border-t">
                   <div className="flex justify-between items-center font-semibold">

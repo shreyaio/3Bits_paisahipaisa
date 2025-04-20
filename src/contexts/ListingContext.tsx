@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 
 interface ListingLocation {
@@ -25,6 +24,7 @@ export interface Listing {
   location: ListingLocation;
   minRentalDays: number;
   maxRentalDays?: number;
+  depositFee: number;
   availableDates?: { start: string; end: string }[];
   tags: string[];
   rating?: number;
@@ -74,6 +74,7 @@ const initialListings: Listing[] = [
     },
     minRentalDays: 1,
     maxRentalDays: 14,
+    depositFee: 50,
     tags: ["Popular", "High-End", "Electronics"],
     rating: 4.8,
     reviews: [
@@ -109,6 +110,7 @@ const initialListings: Listing[] = [
     },
     minRentalDays: 1,
     maxRentalDays: 30,
+    depositFee: 10,
     tags: ["Outdoors", "Sports", "Eco-Friendly"],
     rating: 4.5,
     reviews: [
@@ -144,6 +146,7 @@ const initialListings: Listing[] = [
     },
     minRentalDays: 2,
     maxRentalDays: 14,
+    depositFee: 20,
     tags: ["Outdoors", "Camping", "Eco-Friendly"],
     rating: 4.7,
     reviews: [
@@ -182,6 +185,7 @@ export const ListingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     
     const newListing: Listing = {
       ...listing,
+      depositFee: listing.depositFee, // Ensure depositFee is included
       id: `listing-${Date.now()}`,
       createdAt: new Date().toISOString(),
       tags: generatedTags

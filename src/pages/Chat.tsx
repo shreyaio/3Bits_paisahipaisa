@@ -18,7 +18,7 @@ const Chat = () => {
     getUserConversations,
     getParticipantInfo
   } = useChat();
-  
+
   const [selectedConversation, setSelectedConversation] = useState(
     conversations.length > 0 ? conversations[0].id : null
   );
@@ -40,6 +40,13 @@ const Chat = () => {
   const conversationMessages = selectedConversation 
     ? getConversationMessages(selectedConversation)
     : [];
+  
+  useEffect(() => {
+    const chatContainer = document.getElementById("chat-container");
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }, [conversationMessages]);
   
   // Get the selected conversation details
   const activeConversation = userConversations.find(

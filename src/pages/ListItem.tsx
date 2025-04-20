@@ -16,6 +16,7 @@ import Layout from "@/components/layout/Layout";
 import { Upload, DollarSign, Info } from "lucide-react";
 
 // Define schema for validation
+
 const listingFormSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   category: z.string().min(1, { message: "Please select a category." }),
@@ -25,6 +26,7 @@ const listingFormSchema = z.object({
   location: z.string().min(1, { message: "Location is required." }),
   minRentalDays: z.coerce.number().min(1, { message: "Minimum rental period must be at least 1 day." }),
   maxRentalDays: z.coerce.number().min(1, { message: "Maximum rental period must be at least 1 day." }),
+  depositFee: z.coerce.number().positive({ message: "Deposit fee must be greater than 0." }),
 }).refine((data) => data.maxRentalDays >= data.minRentalDays, {
   message: "Maximum rental period must be greater than or equal to minimum rental period.",
   path: ["maxRentalDays"],
@@ -48,6 +50,7 @@ const ListItem = () => {
       location: "",
       minRentalDays: 1,
       maxRentalDays: 7,
+      depositFee: 0,
     },
   });
 
@@ -85,6 +88,7 @@ const ListItem = () => {
       location: { city: values.location, state: "", address: "Default Address", zipCode: "00000" }, // Adjust to match ListingLocation structure
       minRentalDays: values.minRentalDays,
       maxRentalDays: values.maxRentalDays,
+      depositFee: values.depositFee,
       image: imagePreview || "https://images.unsplash.com/photo-1612900641809-92f551b0a565?w=400&h=300&fit=crop",
       images: [imagePreview || "https://images.unsplash.com/photo-1612900641809-92f551b0a565?w=400&h=300&fit=crop"], // Added images property
       rating: 0,
@@ -325,6 +329,23 @@ const ListItem = () => {
                               <FormLabel>Max. Rental Days</FormLabel>
                               <FormControl>
                                 <Input type="number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="depositFee"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Deposit Fee</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <DollarSign className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                                  <Input type="number" className="pl-10" {...field} />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>

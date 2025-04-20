@@ -125,13 +125,13 @@ const Header = () => {
 
         {/* Desktop Nav Links */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
+          <Link to="/" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
             <Home size={18} /> Home
           </Link>
-          <Link to="/browse" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
+          <Link to="/browse" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
             <Search size={18} /> Browse
           </Link>
-          <Link to="/list-item" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
+          <Link to="/list-item" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
             <PlusCircle size={18} /> List Item
           </Link>
         </nav>
@@ -140,9 +140,9 @@ const Header = () => {
           {user?.isLoggedIn ? (
             <>
               <div className="hidden md:flex items-center gap-2">
-                <Link to="/alerts" className="text-[#396c35] hover:text-white"><Bell size={20} /></Link>
-                <Link to="/wishlist" className="text-[#396c35] hover:text-white"><Heart size={20} /></Link>
-                <Link to="/chat" className="text-[#396c35] hover:text-white"><MessageCircle size={20} /></Link>
+                <Link to="/alerts" className="text-[#396c35] hover:text-[#709a6d]"><Bell size={20} /></Link>
+                <Link to="/wishlist" className="text-[#396c35] hover:text-[#709a6d]"><Heart size={20} /></Link>
+                <Link to="/chat" className="text-[#396c35] hover:text-[#709a6d]"><MessageCircle size={20} /></Link>
               </div>
 
               <DropdownMenu>
@@ -184,7 +184,7 @@ const Header = () => {
             </>
           ) : (
             <Link to="/auth" className="hidden md:block">
-              <Button className="bg-brand-blue hover:bg-brand-teal">Log in</Button>
+              <Button className="bg-[#396c35] hover:bg-[#8cbc89]">Log in</Button>
             </Link>
           )}
 
