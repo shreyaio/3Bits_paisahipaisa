@@ -14,7 +14,7 @@ import Messages from "./pages/Messages";
 import Alerts from "./pages/Alerts";
 import AdminPolicy from "./pages/AdminPolicy";
 import NotFound from "./pages/NotFound";
-
+import Checkout from "./pages/Checkout.tsx";
 
 const queryClient = new QueryClient();
 
@@ -35,12 +35,12 @@ const App = () => (
           <Route path="/messages" element={<Messages />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/policies" element={<AdminPolicy />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-  
 );
 
 export default App;

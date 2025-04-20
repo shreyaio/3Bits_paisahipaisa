@@ -172,7 +172,7 @@ const SignupLogin = () => {
                               <FormMessage />
                             </FormItem>
                           )} />
-                          <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal text-richblack">Login</Button>
+                          <Button type="submit" className="w-full bg-[#396c35] hover:bg-[#63955f] text-richblack">Login</Button>
                         </form>
                       </Form>
                     </CardContent>
@@ -215,7 +215,7 @@ const SignupLogin = () => {
                               </FormItem>
                             )} />
                           ))}
-                          <Button type="submit" className="w-full bg-brand-blue hover:bg-brand-teal text-richblack">Create Account</Button>
+                          <Button type="submit" className="w-full bg-[#396c35] hover:bg-[#63955f] text-richblack">Create Account</Button>
                         </form>
                       </Form>
                     </CardContent>
