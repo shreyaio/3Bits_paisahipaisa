@@ -125,24 +125,41 @@ const Header = () => {
 
         {/* Desktop Nav Links */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
+          <Link to="/" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
             <Home size={18} /> Home
           </Link>
-          <Link to="/browse" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
+          <Link to="/browse" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
             <Search size={18} /> Browse
           </Link>
-          <Link to="/list-item" className="text-sm font-medium text-[#396c35] hover:text-[#709a6d] flex items-center gap-1">
+          <Link to="/list-item" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
             <PlusCircle size={18} /> List Item
           </Link>
+
+          {/* Policy Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
+                📄 Policy
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuLabel>Rental Guidelines</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>✅ Government ID required for verification</DropdownMenuItem>
+              <DropdownMenuItem>📅 Cancellations must be made 24 hrs in advance</DropdownMenuItem>
+              <DropdownMenuItem>🧹 Clean items before return</DropdownMenuItem>
+              <DropdownMenuItem>⏰ Late return fees may apply</DropdownMenuItem>
+              <DropdownMenuItem>⚠️ Report issues within 12 hrs of receipt</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex items-center gap-4">
           {user?.isLoggedIn ? (
             <>
               <div className="hidden md:flex items-center gap-2">
-                <Link to="/alerts" className="text-[#396c35] hover:text-[#709a6d]"><Bell size={20} /></Link>
-                <Link to="/wishlist" className="text-[#396c35] hover:text-[#709a6d]"><Heart size={20} /></Link>
-                <Link to="/chat" className="text-[#396c35] hover:text-[#709a6d]"><MessageCircle size={20} /></Link>
+                <Link to="/alerts" className="text-[#396c35] hover:text-white"><Bell size={20} /></Link>
+                <Link to="/chat" className="text-[#396c35] hover:text-white"><MessageCircle size={20} /></Link>
               </div>
 
               <DropdownMenu>
@@ -184,7 +201,7 @@ const Header = () => {
             </>
           ) : (
             <Link to="/auth" className="hidden md:block">
-              <Button className="bg-[#396c35] hover:bg-[#8cbc89]">Log in</Button>
+              <Button className="bg-brand-blue hover:bg-brand-teal">Log in</Button>
             </Link>
           )}
 

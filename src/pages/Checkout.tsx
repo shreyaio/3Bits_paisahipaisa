@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/layout/Layout";
-import BentoBox from "@/components/shared/BentoBox"; // Update the path to the correct location
+import BentoBox from "@/components/shared/BentoBox";
 import { useState } from "react";
-import { Loader } from "lucide-react";
+import { Loader, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -37,7 +37,6 @@ const Checkout = () => {
     note: ""
   });
 
-  // Calculate total from current booking
   const totalAmount = bookings.reduce((sum, booking) => sum + booking.totalPrice, 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,7 +44,6 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
@@ -68,7 +66,10 @@ const Checkout = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+        <h1 className="text-3xl font-bold mb-8 flex items-center gap-2">
+          <ShoppingCart className="w-7 h-7 text-lime-600 transition-transform hover:scale-110" />
+          Checkout
+        </h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
