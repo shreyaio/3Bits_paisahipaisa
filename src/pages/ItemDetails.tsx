@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -24,7 +23,6 @@ const ItemDetails = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [isWishlisted, setIsWishlisted] = useState(false);
   
-  // Find the listing using the id from URL params
   const listing = listings.find(item => item.id === params.id);
   
   if (!listing) {
@@ -43,18 +41,16 @@ const ItemDetails = () => {
     );
   }
   
-  // Calculate total price based on selected dates
   const calculateTotalDays = () => {
     if (!startDate || !endDate) return 0;
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays || 1; // Ensure minimum of 1 day
+    return diffDays || 1;
   };
   
   const totalDays = calculateTotalDays();
   const totalPrice = totalDays * listing.pricePerDay;
   
-  // Handle booking
   const handleBooking = () => {
     if (!user) {
       toast({
@@ -74,7 +70,6 @@ const ItemDetails = () => {
       return;
     }
     
-    // Check if user is trying to book their own item
     if (listing.ownerId === user.id) {
       toast({
         title: "Cannot book your own item",
@@ -108,7 +103,6 @@ const ItemDetails = () => {
     });
   };
   
-  // Toggle wishlist status
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
     
@@ -124,7 +118,6 @@ const ItemDetails = () => {
     <Layout>
       <div className="container mx-auto py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left column: Item image and details */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
               <div className="h-[400px] bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -208,7 +201,6 @@ const ItemDetails = () => {
                         console.error("Error sharing:", error);
                       });
                     } else {
-                      // Fallback for platforms that don't support navigator.share
                       toast({
                         title: "Sharing not supported",
                         description: "Your browser does not support the Web Share API.",
@@ -257,20 +249,40 @@ const ItemDetails = () => {
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold mb-6">Reviews & Ratings</h2>
               
-              {listing.reviews.length > 0 ? (
-                <div>
-                  {/* Reviews would go here */}
-                  <p>Reviews to be implemented</p>
+              <div className="space-y-6">
+                <div className="border-b pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-medium">Alex Johnson</div>
+                    <StarRating rating={5} />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    Great experience! The item was exactly as described and the owner was very responsive.
+                  </p>
                 </div>
-              ) : (
-                <div className="text-center py-8 border border-dashed rounded-lg">
-                  <p className="text-gray-500">No reviews yet for this item.</p>
+
+                <div className="border-b pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-medium">Samantha Lee</div>
+                    <StarRating rating={4} />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    Item was in good condition. Pickup and return were smooth. Would definitely rent again.
+                  </p>
                 </div>
-              )}
+
+                <div className="border-b pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-medium">Ravi Patel</div>
+                    <StarRating rating={5} />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    Excellent service. The rental process was easy and the item worked perfectly!
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           
-          {/* Right column: Booking widget */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6 sticky top-6">
               <h2 className="text-lg font-semibold mb-4">Book This Item</h2>
@@ -355,7 +367,6 @@ const ItemDetails = () => {
                 You won't be charged yet
               </div>
               
-              {/* Policy reminders */}
               <div className="mt-6 pt-6 border-t space-y-3">
                 <div className="flex items-start">
                   <Clock className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
