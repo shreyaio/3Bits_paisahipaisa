@@ -28,13 +28,40 @@ export interface Booking {
 
 interface BookingContextType {
   bookings: Booking[];
-  createBooking: (booking: Omit<Booking, "id" | "createdAt" | "status">) => void;
-  updateBookingStatus: (id: string, status: Booking["status"], reason?: string) => void;
-  addReview: (bookingId: string, isOwner: boolean, rating: number, comment: string) => void;
+
+  // Adds a new booking (expects a full Booking object)
+  addBooking: (booking: Booking) => void;
+
+  // Creates a booking (without id, createdAt, status which will be generated internally)
+  createBooking: (
+    booking: Omit<Booking, "id" | "createdAt" | "status">
+  ) => void;
+
+  // Updates the status of a booking (optionally with a reason)
+  updateBookingStatus: (
+    id: string,
+    status: Booking["status"],
+    reason?: string
+  ) => void;
+
+  // Adds a review for a booking (either by owner or renter)
+  addReview: (
+    bookingId: string,
+    isOwner: boolean,
+    rating: number,
+    comment: string
+  ) => void;
+
+  // Returns bookings related to a user (as renter or owner)
   getUserBookings: (userId: string, asRenter: boolean) => Booking[];
+
+  // Returns all bookings associated with a listing
   getBookingsByListing: (listingId: string) => Booking[];
+
+  // Returns a specific booking by its ID
   getBooking: (id: string) => Booking | undefined;
 }
+
 
 // Sample initial bookings
 const initialBookings: Booking[] = [
@@ -159,7 +186,8 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   return (
     <BookingContext.Provider value={{ 
-      bookings, 
+      bookings,
+      addBooking: (booking: Booking) => setBookings([...bookings, booking]),
       createBooking, 
       updateBookingStatus, 
       addReview, 
@@ -179,3 +207,4 @@ export const useBookings = () => {
   }
   return context;
 };
+// Removed redundant declaration of BookingContextType

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,7 +20,7 @@ const listingFormSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   category: z.string().min(1, { message: "Please select a category." }),
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
-  condition: z.string().min(1, { message: "Please select a condition." }),
+  condition: z.enum(["New", "Like New", "Good", "Fair"], { message: "Please select a valid condition." }),
   pricePerDay: z.coerce.number().positive({ message: "Price must be greater than 0." }),
   location: z.string().min(1, { message: "Location is required." }),
   minRentalDays: z.coerce.number().min(1, { message: "Minimum rental period must be at least 1 day." }),
@@ -44,7 +43,7 @@ const ListItem = () => {
       title: "",
       category: "",
       description: "",
-      condition: "",
+      condition: "New",
       pricePerDay: 0,
       location: "",
       minRentalDays: 1,
@@ -81,12 +80,13 @@ const ListItem = () => {
       title: values.title,
       category: values.category,
       description: values.description,
-      condition: values.condition,
+      condition: values.condition as "New" | "Like New" | "Good" | "Fair",
       pricePerDay: values.pricePerDay,
-      location: values.location,
+      location: { city: values.location, state: "", address: "Default Address", zipCode: "00000" }, // Adjust to match ListingLocation structure
       minRentalDays: values.minRentalDays,
       maxRentalDays: values.maxRentalDays,
       image: imagePreview || "https://images.unsplash.com/photo-1612900641809-92f551b0a565?w=400&h=300&fit=crop",
+      images: [imagePreview || "https://images.unsplash.com/photo-1612900641809-92f551b0a565?w=400&h=300&fit=crop"], // Added images property
       rating: 0,
       reviews: [],
       createdAt: new Date().toISOString(),
@@ -214,7 +214,21 @@ const ListItem = () => {
                         )}
                       />
                       
-                      <div className="border rounded-lg p-4">
+                      <div 
+                        className="border rounded-lg p-4"
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const file = e.dataTransfer.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setImagePreview(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      >
                         <div className="font-medium mb-4">Item Image</div>
                         <div className="flex items-center justify-center border-2 border-dashed rounded-lg p-6 mb-4">
                           {imagePreview ? (
@@ -368,3 +382,4 @@ const ListItem = () => {
 };
 
 export default ListItem;
+

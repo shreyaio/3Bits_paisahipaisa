@@ -15,6 +15,7 @@ import Alerts from "./pages/Alerts";
 import AdminPolicy from "./pages/AdminPolicy";
 import NotFound from "./pages/NotFound";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (

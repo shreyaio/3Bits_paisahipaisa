@@ -88,15 +88,15 @@ const ItemDetails = () => {
       id: Math.random().toString(36).substring(2, 9),
       listingId: listing.id,
       itemName: listing.title,
-      itemImage: listing.image,
+      itemImage: listing.images[0],
       ownerId: listing.ownerId,
-      ownerName: listing.ownerName,
+      ownerName: user?.id === listing.ownerId ? user.name : "Unknown Owner",
       renterId: user.id,
       renterName: user.name,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       totalPrice,
-      status: "pending",
+      status: "pending" as "pending",
       createdAt: new Date().toISOString(),
     };
     
@@ -129,7 +129,7 @@ const ItemDetails = () => {
             <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
               <div className="h-[400px] bg-gray-100 flex items-center justify-center overflow-hidden">
                 <img 
-                  src={listing.image}
+                  src={listing.images[0]}
                   alt={listing.title}
                   className="w-full h-full object-contain"
                 />
@@ -149,7 +149,7 @@ const ItemDetails = () => {
                 
                 <div className="flex items-center text-gray-500">
                   <MapPin className="h-4 w-4 mr-1" />
-                  <span className="text-sm">{listing.location}</span>
+                  <span className="text-sm">{listing.location.toString()}</span>
                 </div>
               </div>
               
@@ -194,7 +194,29 @@ const ItemDetails = () => {
                   {isWishlisted ? 'Saved' : 'Save'}
                 </Button>
                 
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const shareData = {
+                      title: listing.title,
+                      text: `Check out this item: ${listing.title}`,
+                      url: window.location.href,
+                    };
+
+                    if (navigator.share) {
+                      navigator.share(shareData).catch((error) => {
+                        console.error("Error sharing:", error);
+                      });
+                    } else {
+                      // Fallback for platforms that don't support navigator.share
+                      toast({
+                        title: "Sharing not supported",
+                        description: "Your browser does not support the Web Share API.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                >
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
@@ -219,13 +241,13 @@ const ItemDetails = () => {
               
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                  <span className="text-xl text-gray-500">{listing.ownerName.charAt(0)}</span>
+                  <span className="text-xl text-gray-500">{listing.ownerId.charAt(0)}</span>
                 </div>
                 
                 <div>
                   <div className="font-medium flex items-center">
-                    {listing.ownerName}
-                    <VerificationBadge verified={true} className="ml-2" />
+                    {listing.ownerId === user?.id ? user.name : "Unknown Owner"}
+                    <VerificationBadge verified={true} status="verified" className="ml-2" />
                   </div>
                   <div className="text-sm text-gray-500">Member since {new Date().getFullYear()}</div>
                 </div>

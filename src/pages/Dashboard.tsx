@@ -192,7 +192,7 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold">
                       {
                         userBookings.filter(
-                          (b) => b.status === "active"
+                          (b) => b.status === "ongoing"
                         ).length
                       }
                     </p>
@@ -215,37 +215,52 @@ const Dashboard = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="listings">
+                <TabsContent value="listings">
                 <div className="bg-white rounded-lg shadow p-6">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-semibold">My Listings</h3>
-                    <Button size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add New Listing
-                    </Button>
+                  <h3 className="text-lg font-semibold">My Listings</h3>
+                  <Button size="sm" onClick={() => window.location.href = "/list-item"}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Listing
+                  </Button>
                   </div>
 
                   {userListings.length > 0 ? (
-                    <div className="space-y-4">
-                      <p>User listings will appear here</p>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 border border-dashed rounded-lg">
-                      <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium mb-2">
-                        No Listings Yet
-                      </h3>
-                      <p className="text-gray-500 mb-4">
-                        Start sharing your items with others.
+                  <div className="space-y-4">
+                    {userListings.map((listing) => (
+                    <div
+                      key={listing.id}
+                      className="border rounded-lg p-4 flex justify-between items-center"
+                    >
+                      <div>
+                      <h4 className="font-medium">{listing.title}</h4>
+                      <p className="text-sm text-gray-500">
+                        {listing.description}
                       </p>
-                      <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Create Your First Listing
-                      </Button>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                      ${listing.pricePerDay}
+                      </span>
                     </div>
+                    ))}
+                  </div>
+                  ) : (
+                  <div className="text-center py-12 border border-dashed rounded-lg">
+                    <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">
+                    No Listings Yet
+                    </h3>
+                    <p className="text-gray-500 mb-4">
+                    Start sharing your items with others.
+                    </p>
+                    <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Your First Listing
+                    </Button>
+                  </div>
                   )}
                 </div>
-              </TabsContent>
+                </TabsContent>
 
               <TabsContent value="bookings">
                 <div className="bg-white rounded-lg shadow p-6">

@@ -9,9 +9,10 @@ import { CircleCheck, AlertCircle } from "lucide-react";
 import { VerificationStatus } from "@/types/user";
 
 interface VerificationBadgeProps {
-  status: VerificationStatus;
-  showLabel?: boolean;
   className?: string;
+  verified?: boolean; // Add the 'verified' prop
+  status: VerificationStatus; // Add the 'status' prop
+  showLabel?: boolean; // Add the 'showLabel' prop
 }
 
 const VerificationBadge = ({ status, showLabel = false, className = "" }: VerificationBadgeProps) => {
