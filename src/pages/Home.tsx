@@ -172,36 +172,36 @@ const Home = () => {
       <section className="py-16 bg-[#F1F9DB]">
         <div className="container mx-auto px-4">
           <div 
-        id="featuredListings"
-        ref={(el) => registerSection("featuredListings", el)}
-        className={`transition-all duration-1000 transform ${isVisible.featuredListings ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            id="featuredListings"
+            ref={(el) => registerSection("featuredListings", el)}
+            className={`transition-all duration-1000 transform ${isVisible.featuredListings ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
           >
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-[#171816]">
-            Featured Items
-          </h2>
-          <div>
-            <Link to="/browse" className="text-[#A3D80D] hover:underline font-medium group flex items-center">
-          View All
-          <ArrowRight className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto pb-2">
-          {featuredListings.map((listing, index) => (
-            <Link 
-          to={`/item/${listing.id}`} 
-          key={listing.id} 
-          className={`hover:shadow-xl transition-all duration-500 rounded-xl group transform ${isVisible.featuredListings ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-          style={{ transitionDelay: `${index * 100}ms` }}
-            >
-          <div className="relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-t from-[#A3D80D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-            <ItemCard listing={listing} />
-          </div>
-            </Link>
-          ))}
-        </div>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-[#171816]">
+                Featured Items
+              </h2>
+              <div>
+                <Link to="/" className="text-[#A3D80D] hover:underline font-medium group flex items-center">
+                  View All
+                  <ArrowRight className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto pb-2">
+              {featuredListings.map((listing, index) => (
+                <Link 
+                  to={`/item/${listing.id}`}
+                  key={listing.id} 
+                  className={`hover:shadow-xl transition-all duration-500 rounded-xl group transform ${isVisible.featuredListings ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#A3D80D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <ItemCard listing={listing} />
+                  </div>
+                  </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -245,7 +245,7 @@ const Home = () => {
                   <Button variant="outline" className="group">
                     Learn More About Safety
                     <ArrowRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" />
-                  </Button>
+                  </Button> 
                 </Link>
               </div>
             </div>

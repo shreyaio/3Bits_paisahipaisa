@@ -37,6 +37,8 @@ const Alerts = () => {
       created: new Date().toISOString(),
     },
   ]);
+
+  const [showAddAlertModal, setShowAddAlertModal] = useState(false);
   
   // Remove saved item
   const removeSavedItem = (id: string) => {
@@ -84,7 +86,7 @@ const Alerts = () => {
                     <div key={item.id} className="flex items-center border-b pb-4">
                       <div className="h-16 w-16 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
                         <img 
-                          src={item.image} 
+                          src="item.images[0]" 
                           alt={item.title} 
                           className="h-full w-full object-cover"
                         />
@@ -95,7 +97,7 @@ const Alerts = () => {
                           {item.title}
                         </Link>
                         <div className="text-sm text-gray-500">${item.pricePerDay}/day</div>
-                        <div className="text-sm text-gray-500">{item.location}</div>
+                        <div className="text-sm text-gray-500">{String(item.location)}</div>
                       </div>
                       
                       <div className="flex items-center gap-3">
@@ -131,16 +133,86 @@ const Alerts = () => {
               )}
             </div>
           </TabsContent>
-          
-          <TabsContent value="alerts">
+            <TabsContent value="alerts">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold">Your Search Alerts</h2>
-                <Button>
-                  <Search className="h-4 w-4 mr-2" />
-                  Create New Alert
-                </Button>
+              <h2 className="text-lg font-semibold">Your Search Alerts</h2>
+              <Button onClick={() => setShowAddAlertModal(true)}>
+                <Search className="h-4 w-4 mr-2" />
+                Create New Alert
+              </Button>
               </div>
+
+              {showAddAlertModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold mb-4">Create New Alert</h3>
+                <form
+                  onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target as HTMLFormElement);
+                  const newAlert = {
+                    id: String(Date.now()),
+                    query: formData.get("query") as string,
+                    category: formData.get("category") as string,
+                    notificationEnabled: true,
+                    maxPrice: Number(formData.get("maxPrice")),
+                    created: new Date().toISOString(),
+                  };
+                  setAlerts([...alerts, newAlert]);
+                  setShowAddAlertModal(false);
+                  }}
+                >
+                  <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1" htmlFor="query">
+                    Search Query
+                  </label>
+                  <input
+                    type="text"
+                    id="query"
+                    name="query"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  </div>
+                  <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1" htmlFor="category">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  </div>
+                  <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1" htmlFor="maxPrice">
+                    Max Price
+                  </label>
+                  <input
+                    type="number"
+                    id="maxPrice"
+                    name="maxPrice"
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAddAlertModal(false)}
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit">Create Alert</Button>
+                  </div>
+                </form>
+                </div>
+              </div>
+              )}
               
               {alerts.length > 0 ? (
                 <div className="space-y-4">

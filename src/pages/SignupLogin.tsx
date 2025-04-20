@@ -194,7 +194,7 @@ const SignupLogin = () => {
                     <CardContent>
                       <Form {...signupForm}>
                         <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
-                          {['name', 'email', 'password', 'confirmPassword'].map((fieldName) => (
+                          {(['name', 'email', 'password', 'confirmPassword'] as const).map((fieldName) => (
                             <FormField key={fieldName} control={signupForm.control} name={fieldName} render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="capitalize">{fieldName.replace(/([A-Z])/g, ' $1')}</FormLabel>
