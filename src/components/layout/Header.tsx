@@ -135,6 +135,14 @@ const Header = () => {
             <PlusCircle size={18} /> List Item
           </Link>
 
+          {/* Cart Link */}
+          <Link to="/checkout" className="text-sm font-medium text-[#396c35] hover:text-white flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h11l-1.5-7M7 13h10" />
+            </svg>
+            Cart
+          </Link>
+
           {/* Policy Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
