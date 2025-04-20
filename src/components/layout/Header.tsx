@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,8 @@ import {
   User, 
   LogOut,
   Menu,
-  X
+  X,
+  Heart // 💖 Added Heart icon
 } from "lucide-react";
 
 const Header = () => {
@@ -73,10 +73,13 @@ const Header = () => {
         <div className="flex items-center gap-4">
           {user?.isLoggedIn ? (
             <>
-              {/* Notification and Messages Icons */}
+              {/* Notification, Wishlist, and Messages Icons */}
               <div className="hidden md:flex items-center gap-2">
                 <Link to="/alerts" className="text-[#396c35] hover:text-white transition-colors">
                   <Bell size={20} />
+                </Link>
+                <Link to="/wishlist" className="text-[#396c35] hover:text-white transition-colors">
+                  <Heart size={20} />
                 </Link>
                 <Link to="/chat" className="text-[#396c35] hover:text-white transition-colors">
                   <MessageCircle size={20} />
@@ -151,74 +154,47 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t p-4">
           <nav className="flex flex-col space-y-4">
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
               <Home size={18} />
               Home
             </Link>
-            <Link 
-              to="/browse" 
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/browse" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
               <Search size={18} />
               Browse
             </Link>
-            <Link 
-              to="/list-item" 
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/list-item" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
               <PlusCircle size={18} />
               List Item
             </Link>
-            
+
             {user?.isLoggedIn ? (
               <>
-                <Link 
-                  to="/alerts" 
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to="/alerts" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
                   <Bell size={18} />
                   Alerts
                 </Link>
-                <Link 
-                  to="/chat" 
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to="/wishlist" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
+                  <Heart size={18} />
+                  Wishlist
+                </Link>
+                <Link to="/chat" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
                   <MessageCircle size={18} />
                   Messages
                 </Link>
-                <Link 
-                  to="/dashboard" 
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to="/dashboard" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded" onClick={() => setMobileMenuOpen(false)}>
                   <User size={18} />
                   Dashboard
                 </Link>
-                <button 
-                  className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded w-full text-left"
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                >
+                <button className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded w-full text-left" onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                }}>
                   <LogOut size={18} />
                   Log out
                 </button>
               </>
             ) : (
-              <Link 
-                to="/auth" 
-                className="flex items-center justify-center p-2 bg-brand-blue text-white rounded hover:bg-brand-teal"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Link to="/auth" className="flex items-center justify-center p-2 bg-brand-blue text-white rounded hover:bg-brand-teal" onClick={() => setMobileMenuOpen(false)}>
                 Log in / Sign up
               </Link>
             )}
