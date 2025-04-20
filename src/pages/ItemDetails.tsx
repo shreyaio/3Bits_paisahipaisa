@@ -11,7 +11,16 @@ import { useListings } from "@/contexts/ListingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBookings } from "@/contexts/BookingContext";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Calendar as CalendarIcon, Clock, MessageCircle, Share, Heart, AlertTriangle } from "lucide-react";
+import { MapPin, Calendar as CalendarIcon, Clock, MessageCircle, Share, Heart, AlertTriangle, Star } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+
+interface Review {
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 const ItemDetails = () => {
   const params = useParams();
@@ -22,9 +31,17 @@ const ItemDetails = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [isWishlisted, setIsWishlisted] = useState(false);
-  
+  const [isAddingReview, setIsAddingReview] = useState(false);
+  const [reviewRating, setReviewRating] = useState<number | null>(null);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviews, setReviews] = useState<Review[]>([
+    { userId: "user1", userName: "Alex Johnson", rating: 5, comment: "Great experience! The item was exactly as described and the owner was very responsive.", createdAt: new Date().toISOString() },
+    { userId: "user2", userName: "Samantha Lee", rating: 4, comment: "Item was in good condition. Pickup and return were smooth. Would definitely rent again.", createdAt: new Date().toISOString() },
+    { userId: "user3", userName: "Ravi Patel", rating: 5, comment: "Excellent service. The rental process was easy and the item worked perfectly!", createdAt: new Date().toISOString() },
+  ]);
+
   const listing = listings.find(item => item.id === params.id);
-  
+
   if (!listing) {
     return (
       <Layout>
@@ -40,17 +57,17 @@ const ItemDetails = () => {
       </Layout>
     );
   }
-  
+
   const calculateTotalDays = () => {
     if (!startDate || !endDate) return 0;
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays || 1;
   };
-  
+
   const totalDays = calculateTotalDays();
   const totalPrice = totalDays * listing.pricePerDay;
-  
+
   const handleBooking = () => {
     if (!user) {
       toast({
@@ -60,7 +77,7 @@ const ItemDetails = () => {
       });
       return;
     }
-    
+
     if (!startDate || !endDate) {
       toast({
         title: "Dates required",
@@ -69,7 +86,7 @@ const ItemDetails = () => {
       });
       return;
     }
-    
+
     if (listing.ownerId === user.id) {
       toast({
         title: "Cannot book your own item",
@@ -78,7 +95,7 @@ const ItemDetails = () => {
       });
       return;
     }
-    
+
     const newBooking = {
       id: Math.random().toString(36).substring(2, 9),
       listingId: listing.id,
@@ -94,23 +111,87 @@ const ItemDetails = () => {
       status: "pending" as "pending",
       createdAt: new Date().toISOString(),
     };
-    
+
     addBooking(newBooking);
-    
+
     toast({
       title: "Booking request sent",
       description: "The owner will be notified of your request.",
     });
   };
-  
+
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
-    
+
     toast({
       title: isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-      description: isWishlisted 
-        ? "This item has been removed from your wishlist." 
+      description: isWishlisted
+        ? "This item has been removed from your wishlist."
         : "This item has been added to your wishlist.",
+    });
+  };
+
+  const handleAddReviewClick = () => {
+    setIsAddingReview(true);
+  };
+
+  const handleCancelReview = () => {
+    setIsAddingReview(false);
+    setReviewRating(null);
+    setReviewComment("");
+  };
+
+  const handleStarClick = (rating: number) => {
+    setReviewRating(rating);
+  };
+
+  const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReviewComment(event.target.value);
+  };
+
+  const handleSubmitReview = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please login to leave a review.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!reviewRating) {
+      toast({
+        title: "Rating required",
+        description: "Please select a star rating.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      toast({
+        title: "Comment required",
+        description: "Please write a comment for your review.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newReview: Review = {
+      userId: user.id,
+      userName: user.name,
+      rating: reviewRating,
+      comment: reviewComment,
+      createdAt: new Date().toISOString(),
+    };
+
+    setReviews([newReview, ...reviews]);
+    setIsAddingReview(false);
+    setReviewRating(null);
+    setReviewComment("");
+    toast({
+      title: "Review submitted",
+      description: "Thank you for your feedback!",
     });
   };
 
@@ -121,17 +202,17 @@ const ItemDetails = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
               <div className="h-[400px] bg-gray-100 flex items-center justify-center overflow-hidden">
-                <img 
+                <img
                   src={listing.images[0]}
                   alt={listing.title}
                   className="w-full h-full object-contain"
                 />
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow p-6 mb-8">
               <h1 className="text-2xl font-bold mb-2">{listing.title}</h1>
-              
+
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center text-amber-500">
                   <StarRating rating={listing.rating} />
@@ -139,29 +220,29 @@ const ItemDetails = () => {
                     ({listing.reviews.length} reviews)
                   </span>
                 </div>
-                
+
                 <div className="flex items-center text-gray-500">
                   <MapPin className="h-4 w-4 mr-1" />
                   <span className="text-sm">{listing.location.toString()}</span>
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-center py-4 border-t border-b mb-6">
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Price Per Day</div>
                   <div className="text-2xl font-bold">${listing.pricePerDay}</div>
                 </div>
-                
+
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Condition</div>
                   <div className="font-medium">{listing.condition}</div>
                 </div>
-                
+
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Category</div>
                   <div className="font-medium">{listing.category}</div>
                 </div>
-                
+
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Rental Period</div>
                   <div className="font-medium">
@@ -169,16 +250,16 @@ const ItemDetails = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mb-8">
                 <h2 className="text-lg font-semibold mb-4">Description</h2>
                 <p className="text-gray-700 whitespace-pre-line">
                   {listing.description}
                 </p>
               </div>
-              
+
               <div className="flex gap-4">
-                <Button 
+                <Button
                   variant="outline"
                   className={`${isWishlisted ? 'bg-red-50 text-red-600 border-red-200' : ''}`}
                   onClick={toggleWishlist}
@@ -186,7 +267,7 @@ const ItemDetails = () => {
                   <Heart className={`h-4 w-4 mr-2 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
                   {isWishlisted ? 'Saved' : 'Save'}
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -212,14 +293,14 @@ const ItemDetails = () => {
                   <Share className="h-4 w-4 mr-2" />
                   Share
                 </Button>
-                
+
                 <Button variant="outline" className="text-red-600">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Report
                 </Button>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Lender Information</h2>
@@ -230,12 +311,12 @@ const ItemDetails = () => {
                   </Button>
                 )}
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
                   <span className="text-xl text-gray-500">{listing.ownerId.charAt(0)}</span>
                 </div>
-                
+
                 <div>
                   <div className="font-medium flex items-center">
                     {listing.ownerId === user?.id ? user.name : "Unknown Owner"}
@@ -245,48 +326,67 @@ const ItemDetails = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold mb-6">Reviews & Ratings</h2>
-              
+
+              {isAddingReview ? (
+                <div className="space-y-4">
+                  <div className="flex items-center mb-2">
+                    <label className="block text-sm font-medium mr-4">Rate this item:</label>
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-6 w-6 cursor-pointer ${
+                            star <= (reviewRating || 0) ? 'fill-amber-500 text-amber-500' : 'text-gray-400'
+                          }`}
+                          onClick={() => handleStarClick(star)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Textarea
+                      placeholder="Write your review here..."
+                      value={reviewComment}
+                      onChange={handleCommentChange}
+                      className="w-full mb-2"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={handleCancelReview}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSubmitReview} disabled={!reviewRating || !reviewComment.trim()}>
+                      Submit Review
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <Button variant="outline" onClick={handleAddReviewClick} disabled={!user}>
+                    Add Your Review
+                  </Button>
+                  {!user && <p className="text-xs text-gray-500 mt-1">Login to add a review.</p>}
+                </div>
+              )}
               <div className="space-y-6">
-                <div className="border-b pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium">Alex Johnson</div>
-                    <StarRating rating={5} />
+                {reviews.map((review) => (
+                  <div key={review.createdAt} className="border-b pb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-medium">{review.userName}</div>
+                      <StarRating rating={review.rating} />
+                    </div>
+                    <p className="text-gray-700 text-sm">{review.comment}</p>
                   </div>
-                  <p className="text-gray-700 text-sm">
-                    Great experience! The item was exactly as described and the owner was very responsive.
-                  </p>
-                </div>
-
-                <div className="border-b pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium">Samantha Lee</div>
-                    <StarRating rating={4} />
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    Item was in good condition. Pickup and return were smooth. Would definitely rent again.
-                  </p>
-                </div>
-
-                <div className="border-b pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium">Ravi Patel</div>
-                    <StarRating rating={5} />
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    Excellent service. The rental process was easy and the item worked perfectly!
-                  </p>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6 sticky top-6">
               <h2 className="text-lg font-semibold mb-4">Book This Item</h2>
-              
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">Select Dates</label>
                 <div className="grid grid-cols-2 gap-3">
@@ -311,7 +411,6 @@ const ItemDetails = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  
                   <div>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -335,60 +434,29 @@ const ItemDetails = () => {
                   </div>
                 </div>
               </div>
-              
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center">
                   <div className="text-sm">${listing.pricePerDay} × {totalDays} days</div>
                   <div>${totalPrice}</div>
                 </div>
-                
                 <div className="flex justify-between items-center">
                   <div className="text-sm">Service fee</div>
                   <div>$0</div>
                 </div>
-
                 <div className="flex justify-between items-center">
                   <div className="text-sm">Deposit Fee</div>
                   <div>${listing.depositFee}</div>
                 </div>
-                
                 <div className="pt-4 border-t">
                   <div className="flex justify-between items-center font-semibold">
                     <div>Total</div>
-                    <div>${totalPrice}</div>
+                    <div>${totalPrice + listing.depositFee}</div>
                   </div>
                 </div>
               </div>
-              
-              <Button
-                className="w-full mb-4"
-                onClick={handleBooking}
-                disabled={listing.ownerId === user?.id}
-              >
-                {listing.ownerId === user?.id ? "This is your listing" : "Request to Book"}
+              <Button onClick={handleBooking} className="w-full">
+                Request to Book
               </Button>
-              
-              <div className="text-xs text-center text-gray-500">
-                You won't be charged yet
-              </div>
-              
-              <div className="mt-6 pt-6 border-t space-y-3">
-                <div className="flex items-start">
-                  <Clock className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
-                  <div className="text-sm">
-                    <div className="font-medium mb-1">Timely Returns</div>
-                    <p className="text-gray-500">Return by the due date to avoid late fees.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <AlertTriangle className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
-                  <div className="text-sm">
-                    <div className="font-medium mb-1">Cancellation Policy</div>
-                    <p className="text-gray-500">Free cancellation up to 24 hours before pickup.</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
